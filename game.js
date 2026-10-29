@@ -10,6 +10,11 @@ function reset() {
   game.elapsed = 0;
   game.spawnTimer = 0;
   game.over = false;
+  game.paused = false;
+}
+
+function togglePause() {
+  if (!game.over) game.paused = !game.paused;
 }
 
 function spawn() {
@@ -80,6 +85,12 @@ function draw(ctx, state) {
   ctx.textAlign = 'left';
   ctx.fillText('Score: ' + score, 10, 26);
 
+  if (state.paused && !state.over) {
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 36px sans-serif';
+    ctx.fillText('Paused', W / 2, H / 2);
+  }
+
   if (state.over) {
     ctx.textAlign = 'center';
     ctx.font = 'bold 36px sans-serif';
@@ -95,6 +106,10 @@ function onKeyDown(e) {
   if (handled.indexOf(e.code) !== -1) e.preventDefault();
   if (e.code === 'Space' && game.over) {
     reset();
+    return;
+  }
+  if (e.code === 'KeyP') {
+    if (!e.repeat) togglePause();
     return;
   }
   keys.add(e.code);
@@ -113,7 +128,7 @@ function init(canvas) {
   function loop(ts) {
     var dt = Math.min((ts - (lastTs || ts)) / 1000, 0.05);
     lastTs = ts;
-    if (!game.over) update(dt);
+    if (!game.over && !game.paused) update(dt);
     draw(ctx, game);
     requestAnimationFrame(loop);
   }
