@@ -1,4 +1,3 @@
-// Dodge: vanilla canvas game logic.
 var W = 600, H = 400;
 var game = {};
 var keys = new Set();
@@ -11,10 +10,6 @@ function reset() {
   game.spawnTimer = 0;
   game.over = false;
   game.paused = false;
-}
-
-function togglePause() {
-  if (!game.over) game.paused = !game.paused;
 }
 
 function spawn() {
@@ -66,7 +61,6 @@ function update(dt) {
 }
 
 function draw(ctx, state) {
-  ctx.clearRect(0, 0, W, H);
   ctx.fillStyle = '#111';
   ctx.fillRect(0, 0, W, H);
 
@@ -109,7 +103,7 @@ function onKeyDown(e) {
     return;
   }
   if (e.code === 'KeyP') {
-    if (!e.repeat) togglePause();
+    if (!e.repeat && !game.over) game.paused = !game.paused;
     return;
   }
   keys.add(e.code);
